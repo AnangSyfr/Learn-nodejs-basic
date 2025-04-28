@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "dev": "npx ts-node src/filesystem/index.ts",
+    "dev": "npx ts-node src/web-service/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "AnangSyfr",
