@@ -5,22 +5,27 @@ function requestListener(
     req: IncomingMessage,
     res: ServerResponse<IncomingMessage> & { req: IncomingMessage },
 ): void {
-    res.setHeader("Content-Type", "text/html");
-    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Powered-By", "Node JS");
 
     const { method, url } = req;
 
     if (url === "/") {
         if (method === "GET") {
-            res.end("<h1>Ini adalah homepage</h1>");
+            res.statusCode = 200;
+            res.end(JSON.stringify({ message: "Ini adalah home page" }));
         } else {
+            res.statusCode = 400;
             res.end(
-                `<h1>Halaman tidak dapat diakses dengan ${method} request</h1>`,
+                JSON.stringify({
+                    message: `Halaman tidak dapat diakses dengan ${method} request`,
+                }),
             );
         }
     } else if (url === "/about") {
         if (method === "GET") {
-            res.end("<h1>Ini adalah about</h1>");
+            res.statusCode = 200;
+            res.end(JSON.stringify({ message: "Ini adalah about" }));
         } else if (method === "POST") {
             let body: any = [];
 
@@ -29,18 +34,35 @@ function requestListener(
             });
 
             req.on("end", () => {
+                if (body.length == 0) {
+                    res.statusCode = 400;
+                    res.end(
+                        JSON.stringify({ message: "Body tidak boleh kosong" }),
+                    );
+                    return;
+                }
+
                 body = Buffer.concat(body).toString();
 
                 const { name } = JSON.parse(body);
-                res.end(`<h1>Hai, ${name}</h1>`);
+                res.statusCode = 200;
+                res.end(
+                    JSON.stringify({
+                        message: `Hai ${name}! Ini adalah halaman about`,
+                    }),
+                );
             });
         } else {
+            res.statusCode = 400;
             res.end(
-                `<h1>Halaman tidak dapat diakses dengan ${method} request</h1>`,
+                JSON.stringify({
+                    message: `Halaman tidak dapat diakses dengan ${method} request`,
+                }),
             );
         }
     } else {
-        res.end("Halaman tidak ditemukan");
+        res.statusCode = 404;
+        res.end(JSON.stringify({ message: "Halaman tidak ditemukan" }));
     }
 }
 
