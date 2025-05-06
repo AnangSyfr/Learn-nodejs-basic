@@ -51,10 +51,12 @@ const routes: ServerRoute<ReqRefDefaults> | ServerRoute<ReqRefDefaults>[] = [
         //     },
         // },
         handler: (request, h) => {
-            console.log(request.payload);
             const { username, password } = request.payload as LoginPayload;
             console.log(username);
-            return `Welcome ${username}`;
+            return h
+                .response("success")
+                .type("application/json")
+                .header("Custom-header", "some-value");
         },
     },
     {
